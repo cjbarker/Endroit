@@ -1,0 +1,10 @@
+1) Obtain complete area code listing
+
+2) Create DB schema
+   - Lookup can return multiple location(s) shared by area code
+
+3) See if possible to check user's phone location to determine if incoming call has corresponding area code from that city
+
+4) Including time zone for given caller and their current time
+
+5) Create GUI text overlay on incoming call screen for display
