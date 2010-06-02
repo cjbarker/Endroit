@@ -1,17 +1,22 @@
 package com.weej.endroit;
 
+import java.util.List;
+
 /**
  * Class for representing locations within the United States.
  * 
  * @author CJ Barker
  */
 public class Location {
-	
+
 	// member vars
+	private List<Person> people;
 	private String city;
 	private String state;
 	private String county;
 	private String territory;
+	private String areaCode;
+	private String prefixSuffix; 
 	
 	public Location() {}
 	
@@ -81,5 +86,21 @@ public class Location {
 
 	public void setTerritory(String territory) {
 		this.territory = territory;
+	}
+	
+	public void setAreaCode(String a) {
+		this.areaCode = a;
+	}
+	
+	public String getAreaCode() {
+		return this.areaCode;
+	}
+	
+	public void setPrefixSuffix(String s) {
+		this.prefixSuffix = s;
+	}
+	
+	public String getPrefixSuffix() {
+		return this.prefixSuffix;
 	}
 }

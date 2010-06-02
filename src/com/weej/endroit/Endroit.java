@@ -18,7 +18,6 @@ public class Endroit extends Activity
 	
 	// member vars
 	private TextView textOut;
-	private Map<String, Location> areaCodes;
 	private EndroitPhoneStateListener listener;
 	private TelephonyManager telephonyMgr;
 	
@@ -32,29 +31,11 @@ public class Endroit extends Activity
         
         // get UI
         textOut = (TextView) findViewById(R.id.textOut);
-        
-        loadAreaCodes();
        
         // create PhoneStateListener and register it
         listener = new EndroitPhoneStateListener();
         telephonyMgr = (TelephonyManager)getSystemService(TELEPHONY_SERVICE); 
         telephonyMgr.listen(listener, PhoneStateListener.LISTEN_CALL_STATE);
-    }
-    
-    /**
-     * Retrieves all area codes from local database and loads them into memory
-     * @param codes	Map to store area codes and corresponding city/state
-     */
-    private void loadAreaCodes() {
-    	if (areaCodes == null) {
-    		areaCodes = new HashMap<String, Location>();
-    	}
-    	
-    	// TODO pull area codes from database and load into memory
-    	areaCodes.put("512", new Location("Austin", "TX"));
-    	areaCodes.put("318", new Location("Lafayatte", "LA"));
-    	
-    	Log.i(TAG, "Loaded/initialized ["+areaCodes.size()+"] area code corresponding locations into memory");
     }
     
     /**
@@ -65,15 +46,6 @@ public class Endroit extends Activity
     private String extractAreaCode(String phoneNumber) {
     	String nbr = PhoneNumberUtils.stripSeparators(phoneNumber).trim();
     	return nbr.substring(0, 3);
-    }
-    
-    /**
-     * Looks up the corresponding area code's location
-     * @param areaCode	Area code to search for
-     * @return			Location of corresponding area code or null if none found
-     */
-    private Location lookup(String areaCode) {
-    	return this.areaCodes.get(areaCode.trim());
     }
     
     public class EndroitPhoneStateListener extends PhoneStateListener 
@@ -106,7 +78,7 @@ public class Endroit extends Activity
             	}
             	*/
             
-            	Location loc = lookup(extractAreaCode(incomingNumber));
+            	Location loc = WhitePages.getInstance().reverseLookup(incomingNumber);
             	Log.i(TAG, "Corresponding location: " + loc);
             	textOut.append("\nonCallStateChanged: "+stateStr);
             	textOut.append("\nphoneNbr: "+incomingNumber);
