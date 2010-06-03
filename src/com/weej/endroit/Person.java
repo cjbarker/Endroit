@@ -3,30 +3,20 @@ package com.weej.endroit;
 public class Person {
 	
 	// member var
-	private String firstName;
-	private String lastName;
+	private String fullName;
 	
 	public Person() {}
 	
-	public Person(String fName, String lName) {
-		this.firstName = fName;
-		this.lastName = lName;
+	public Person(String name) {
+		this.fullName = name;
 	}
 
 	// getters & setters
-	public String getFirstName() {
-		return firstName;
+	public String getFullName() {
+		return fullName;
 	}
 
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
-
-	public String getLastName() {
-		return lastName;
-	}
-
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
+	public void setFullName(String n) {
+		this.fullName = n;
 	}
 }

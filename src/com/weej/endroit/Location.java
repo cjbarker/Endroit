@@ -1,7 +1,5 @@
 package com.weej.endroit;
 
-import java.util.List;
-
 /**
  * Class for representing locations within the United States.
  * 
@@ -10,11 +8,12 @@ import java.util.List;
 public class Location {
 
 	// member vars
-	private List<Person> people;
+	private Person person;
+	private String address;
 	private String city;
 	private String state;
+	private String zipCode;
 	private String county;
-	private String territory;
 	private String areaCode;
 	private String prefixSuffix; 
 	
@@ -25,35 +24,40 @@ public class Location {
 	}
 	
 	public Location(String city, String state, String county) {
-		this(city, state, county, null);
-	}
-	
-	public Location(String city, String state, String county, String territory) {
 		this.city = city;
 		this.state = state;
 		this.county = county;
-		this.territory = territory;
 	}
 	
 	@Override
 	public String toString() {
-		String msg = null;
-		if (city != null && state != null) {
-			msg = city + ", "+ state;
+		StringBuffer msg = new StringBuffer();
+		
+		if (person != null) {
+			msg.append(person.getFullName()+"\n");
+		}
+		
+		if (address != null && city != null && state != null && zipCode != null) {
+			msg.append(address + "\n" + city + ", "+ state + " " + zipCode);
+		}
+		else if (address != null && city != null && state != null) {
+			msg.append(address + "\n" + city + ", "+ state);
+		}
+		else if (city != null && state != null) {
+			msg.append(city + ", "+ state);
 		}
 		else if (city != null && county != null) {
-			msg = city + ", "+ county;
+			msg.append(city + ", "+ county);
 		}
 		else if (state != null && county != null) {
-			msg = state + ", "+county;
+			msg.append(state + ", "+county);
 		}
-		else if (territory != null) {
-			msg = territory;
+
+		if (msg.length() == 0){
+			msg.append("Unknown");
 		}
-		else {
-			msg = "Unknown";
-		}
-		return msg;
+		
+		return msg.toString();
 	}
 
 	public String getCity() {
@@ -79,14 +83,6 @@ public class Location {
 	public void setCounty(String county) {
 		this.county = county;
 	}
-
-	public String getTerritory() {
-		return territory;
-	}
-
-	public void setTerritory(String territory) {
-		this.territory = territory;
-	}
 	
 	public void setAreaCode(String a) {
 		this.areaCode = a;
@@ -102,5 +98,29 @@ public class Location {
 	
 	public String getPrefixSuffix() {
 		return this.prefixSuffix;
+	}
+	
+	public Person getPerson() {
+		return this.person;
+	}
+	
+	public void setPerson(Person p) {
+		this.person = p;
+	}
+	
+	public String getZipCode() {
+		return this.zipCode;
+	}
+	
+	public void setZipCode(String z) {
+		this.zipCode = z;
+	}
+	
+	public String getAddress() {
+		return this.address;
+	}
+	
+	public void setAddress(String a) {
+		this.address = a;
 	}
 }
