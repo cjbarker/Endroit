@@ -1,105 +1,45 @@
 package com.weej.endroit;
 
-import java.util.Map;
-import java.util.HashMap;
-
-import android.app.Activity;
-import android.widget.TextView;
 import android.os.Bundle;
+import android.app.Activity;
+import android.content.Intent;
 import android.util.Log;
-import android.telephony.PhoneStateListener;
-import android.telephony.TelephonyManager;
-import android.telephony.PhoneNumberUtils;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 
-public class Endroit extends Activity 
+public class Endroit extends Activity implements OnClickListener 
 {
 	// static vars
 	private static final String TAG = "Endroit";
 	
 	// member vars
-	private TextView textOut;
-	private EndroitPhoneStateListener listener;
-	private TelephonyManager telephonyMgr;
-	private Map<String, Location> callHistory;
+	private Button buttonStart, buttonStop;
 	
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+	    setContentView(R.layout.main);
+
+	    buttonStart = (Button) findViewById(R.id.buttonStart);
+	    buttonStop = (Button) findViewById(R.id.buttonStop);
+
+	    buttonStart.setOnClickListener(this);
+	    buttonStop.setOnClickListener(this);
+	    
+	    Log.d(TAG, "Activity created");
+	}
 	
-    /** Called when the activity is first created. */
-    @Override
-    public void onCreate(Bundle savedInstanceState) 
-    {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
-        
-        // get UI
-        textOut = (TextView) findViewById(R.id.textOut);
-       
-        // create PhoneStateListener and register it
-        listener = new EndroitPhoneStateListener();
-        telephonyMgr = (TelephonyManager)getSystemService(TELEPHONY_SERVICE); 
-        telephonyMgr.listen(listener, PhoneStateListener.LISTEN_CALL_STATE);
-        
-        // cache of incoming calls
-        callHistory = new HashMap<String, Location>();
-    }
-    
-    /**
-     * Parses phone number and extracts area code
-     * @param phoneNumber	
-     * @return Area code of corresponding phone number
-     */
-    private String extractAreaCode(String phoneNumber) {
-    	String nbr = PhoneNumberUtils.stripSeparators(phoneNumber).trim();
-    	return nbr.substring(0, 3);
-    }
-    
-    public class EndroitPhoneStateListener extends PhoneStateListener 
-    { 
-        @Override 
-        public void onCallStateChanged(int state, String incomingNumber)
-        { 
-        	String stateStr = "N/A";
-        	
-            switch (state) {
-            case TelephonyManager.CALL_STATE_IDLE:
-            	stateStr = "Idle";
-              break;
-            case TelephonyManager.CALL_STATE_OFFHOOK:
-            	stateStr = "Off Hook";
-              break;
-            case TelephonyManager.CALL_STATE_RINGING:
-            	stateStr = "Ringing";
-              break;
-            }
-            
-            Log.d(TAG, "CallStateChanged to "+stateStr);
-            
-            if (state == TelephonyManager.CALL_STATE_RINGING) 
-            {
-            	/*
-            	if (PhoneNumberUtils.isGlobalPhoneNumber(incomingNumber)) {
-            		Log.w(TAG, "Is global phone number which is currently unsupported.");
-            		return;
-            	}
-            	*/
-            	
-            	// check if in cache
-            	Location loc = callHistory.get(incomingNumber);
-            	
-            	if (loc == null) {
-            		Log.d(TAG, "Number does not exist in cache - will perform reverse look-up");
-            		loc = WhitePages.getInstance().reverseLookup(incomingNumber);
-            		if (loc != null) {
-            			callHistory.put(incomingNumber, loc);
-            		}
-            	}
-            
-            	Log.i(TAG, "Corresponding location: " + loc);
-            	textOut.append("\nonCallStateChanged: "+stateStr);
-            	textOut.append("\nphoneNbr: "+incomingNumber);
-            	textOut.append("\nlocation: "+loc);
-            	
-            	// TODO display overlay image on incoming call screen
-            }
-        } 
-    } 
+	public void onClick(View src) {
+		switch (src.getId()) {
+		    case R.id.buttonStart:
+		      Log.d(TAG, "onClick: starting srvice");
+		      startService(new Intent(this, EndroitService.class));
+		      break;
+		    case R.id.buttonStop:
+		      Log.d(TAG, "onClick: stopping srvice");
+		      stopService(new Intent(this, EndroitService.class));
+		      break;
+		}
+	}
 }
