@@ -20,6 +20,7 @@ public class Endroit extends Activity
 	private TextView textOut;
 	private EndroitPhoneStateListener listener;
 	private TelephonyManager telephonyMgr;
+	private Map<String, Location> callHistory;
 	
 	
     /** Called when the activity is first created. */
@@ -36,6 +37,9 @@ public class Endroit extends Activity
         listener = new EndroitPhoneStateListener();
         telephonyMgr = (TelephonyManager)getSystemService(TELEPHONY_SERVICE); 
         telephonyMgr.listen(listener, PhoneStateListener.LISTEN_CALL_STATE);
+        
+        // cache of incoming calls
+        callHistory = new HashMap<String, Location>();
     }
     
     /**
@@ -77,12 +81,23 @@ public class Endroit extends Activity
             		return;
             	}
             	*/
+            	
+            	// check if in cache
+            	Location loc = callHistory.get(incomingNumber);
+            	
+            	if (loc == null) {
+            		Log.d(TAG, "Number does not exist in cache - will perform reverse look-up");
+            		loc = WhitePages.getInstance().reverseLookup(incomingNumber);
+            		if (loc != null) {
+            			callHistory.put(incomingNumber, loc);
+            		}
+            	}
             
-            	Location loc = WhitePages.getInstance().reverseLookup(incomingNumber);
             	Log.i(TAG, "Corresponding location: " + loc);
             	textOut.append("\nonCallStateChanged: "+stateStr);
             	textOut.append("\nphoneNbr: "+incomingNumber);
             	textOut.append("\nlocation: "+loc);
+            	
             	// TODO display overlay image on incoming call screen
             }
         } 
