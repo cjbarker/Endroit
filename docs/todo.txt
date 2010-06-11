@@ -1,10 +1,10 @@
-1) Obtain complete area code listing
+1) Create DB schema from central office code assignment mappings
 
-2) Create DB schema
-   - Lookup can return multiple location(s) shared by area code
+2) Include time zone for given caller and their current time
+Time zones provided via NANPA's area code database download
 
-3) See if possible to check user's phone location to determine if incoming call has corresponding area code from that city
+3) Update toaster with new information (city, state, and time)
 
-4) Including time zone for given caller and their current time
+4) Add service into notification bar
 
-5) Create GUI text overlay on incoming call screen for display
+5) Provide configuration settings for service via activity
